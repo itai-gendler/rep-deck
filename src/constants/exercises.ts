@@ -301,25 +301,25 @@ export const PRESET_REP_RANGES = [
 // Weekly benchmark (used by training-frequency radar)
 // ─────────────────────────────────────────────────────────────
 export const WEEK_DAYS = [
-	"Mon",
-	"Tue",
-	"Wed",
-	"Thu",
-	"Fri",
-	"Sat",
-	"Sun",
+	"Monday",
+	"Tuesday",
+	"Wednesday",
+	"Thursday",
+	"Friday",
+	"Saturday",
+	"Sunday",
 ] as const;
 
 export type WeekDay = (typeof WEEK_DAYS)[number];
 
 export const TWELVE_WEEK_BENCHMARK: Record<WeekDay, number> = {
-	Mon: 12,
-	Tue: 12,
-	Wed: 12,
-	Thu: 12,
-	Fri: 12,
-	Sat: 12,
-	Sun: 12,
+	Monday: 12,
+	Tuesday: 12,
+	Wednesday: 12,
+	Thursday: 12,
+	Friday: 12,
+	Saturday: 12,
+	Sunday: 12,
 };
 
 // ─────────────────────────────────────────────────────────────

@@ -100,46 +100,64 @@ export function TrainingFrequencyCard({
 			<CardsHeader icon={ActivityIcon} title="Training Distribution" />
 
 			<CardContent className="p-4 pt-1 fcol3">
-				<div className="grid grid-cols-2 gap-2 text-xs">
-					<div className="fcy gap-2 bg-secondary/30 border border-secondary/60 p-2 rounded-md">
-						<FlameIcon
-							className="size-4 text-primary sh0"
-							weight="fill"
-						/>
-						<div className="fcol leading-tight">
-							<span className="ftext-3xs fmuted fupper font-medium">
+				<div className="grid grid-cols-2 gap-2">
+					<div className="fcy gap-2.5 bg-secondary/30 border border-secondary/60 p-3 rounded-md">
+						<div className="ficon-box p-1.5">
+							<FlameIcon
+								className="size-3.5 text-primary"
+								weight="fill"
+							/>
+						</div>
+						<div className="fcol0.5 min-w-0 flex-1">
+							<span className="ftext-3xs fmuted fupper font-semibold">
 								12-Wk Total
 							</span>
-							<span className="font-bold text-foreground ">
-								{totalSessions}{" "}
-								<span className="ftext-2xs font-normal fmuted">
+							<span className="fcy gap-1.5 text-sm font-bold leading-none">
+								<span className="text-foreground tabular-nums">
+									{totalSessions}
+								</span>
+								<span className="ftext-3xs font-normal fmuted fupper">
 									sessions
 								</span>
 							</span>
 						</div>
 					</div>
 
-					<div className="fcy gap-2 bg-secondary/30 border border-secondary/60 p-2 rounded-md">
-						<TrophyIcon
-							className="size-4 text-popover-foreground sh0"
-							weight="duotone"
-						/>
-						<div className="fcol leading-tight">
-							<span className="ftext-3xs fmuted fupper font-medium">
+					<div className="fcy gap-2.5 bg-secondary/30 border border-secondary/60 p-3 rounded-md">
+						<div className="ficon-box p-1.5">
+							<TrophyIcon
+								className="size-3.5 text-primary"
+								weight="duotone"
+							/>
+						</div>
+						<div className="fcol0.5 min-w-0 flex-1">
+							<span className="ftext-3xs fmuted fupper font-semibold">
 								Peak Day
 							</span>
-							<span className="font-bold text-foreground">
-								{peakDay
-									? `${peakDay.day} (${peakDay.sessions})`
-									: "N/A"}
-							</span>
+							{peakDay ? (
+								<span className="fcy gap-1.5 text-sm font-bold leading-none truncate ">
+									<span className="text-foreground">
+										{peakDay.day}
+									</span>
+									<span className="tabular-nums text-primary">
+										{peakDay.sessions}
+									</span>
+									<span className="ftext-3xs font-normal fmuted fupper">
+										sessions
+									</span>
+								</span>
+							) : (
+								<span className="font-bold fmuted text-sm leading-none">
+									—
+								</span>
+							)}
 						</div>
 					</div>
 				</div>
 
 				<ChartContainer
 					config={chartConfig}
-					className="mx-auto aspect-square max-h-[200px] w-full"
+					className="mx-auto aspect-square max-h-50 w-full"
 				>
 					<RadarChart
 						data={combinedData}

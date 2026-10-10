@@ -147,7 +147,9 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 					<div className="fc size-7">
 						<Logo className="size-full text-primary" />
 					</div>
-					<span className="text-xl tracking-tighter">Rep Deck</span>
+					<span className="text-xl tracking-tighter fupper">
+						Rep Deck
+					</span>
 				</Link>
 
 				<NavigationMenu className="hidden lg:flex">
@@ -210,7 +212,7 @@ export const Navigation = ({ userName = "Account" }: NavigationProps) => {
 							side="right"
 							className="flex w-[85vw] max-w-sm flex-col p-0"
 						>
-							<SheetHeader className="fr items-center justify-between p-5 border-b border-border/60">
+							<SheetHeader className="fr items-center justify-between p-5 border-b border-border/60 fupper">
 								<SheetTitle className="fcy gap-2 text-sm font-bold tracking-tight">
 									<div className="flex size-6 items-center justify-center">
 										<Logo className="size-full text-primary" />

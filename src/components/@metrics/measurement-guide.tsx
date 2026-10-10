@@ -16,7 +16,7 @@ export function MeasurementGuide() {
 						key={item.label}
 						className="p-2 border border-border/40 bg-background/50 rounded-none space-y-0.5"
 					>
-						<span className="ftext-xs2 font-bold text-primary block">
+						<span className="ftext-xs2 font-bold text-primary block fupper">
 							{item.label}
 						</span>
 						<p className="ftext-xs2 fmuted leading-snug">

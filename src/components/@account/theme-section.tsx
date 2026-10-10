@@ -2,10 +2,10 @@
 
 import {
 	CalendarCheckIcon,
+	CatIcon,
 	EyeIcon,
 	FlowerIcon,
 	FlowerLotusIcon,
-	GameControllerIcon,
 	LeafIcon,
 	PaintBrushIcon,
 	PlanetIcon,
@@ -22,7 +22,7 @@ const THEME_ICONS: Record<ThemeSlug, React.ElementType> = {
 	green: PlantIcon,
 	violateeye: EyeIcon,
 	rosepine: FlowerIcon,
-	retro: GameControllerIcon,
+	catppuccin: CatIcon,
 	cosmic: PlanetIcon,
 	orchid: FlowerLotusIcon,
 	booking: CalendarCheckIcon,

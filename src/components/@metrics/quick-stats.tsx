@@ -69,13 +69,13 @@ export function QuickStats({ stats, loading = false }: QuickStatsProps) {
 							<div className="flex items-baseline justify-between gap-2 min-h-8">
 								{isNotes ? (
 									<p
-										className="text-xs font-medium text-foreground line-clamp-2 leading-tight capitalize"
+										className="ftext-2xs font-medium text-foreground line-clamp-2 leading-tight capitalize"
 										title={card.value || "No notes"}
 									>
 										{card.value || "No notes"}
 									</p>
 								) : (
-									<span className="text-2xl font-bold tracking-tight text-foreground ">
+									<span className="text-2xl font-bold tracking-tight text-foreground">
 										{card.value}
 									</span>
 								)}

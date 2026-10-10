@@ -110,7 +110,7 @@ export function StrengthChart({
 		return (
 			<Card
 				size="sm"
-				className="fcard-flat relative min-h-[300px] w-full"
+				className="fcard-flat relative min-h-75 w-full"
 			>
 				<Empty className="p-8 text-center w-full">
 					<EmptyHeader>
@@ -164,7 +164,7 @@ export function StrengthChart({
 						margin={{
 							top: 10,
 							right: 10,
-							left: 0,
+							left: 10,
 							bottom: 0,
 						}}
 					>

@@ -82,7 +82,7 @@ export function LastWorkoutCard({
 						<EmptyTitle className="text-sm font-medium text-foreground">
 							No sessions recorded
 						</EmptyTitle>
-						<EmptyDescription className="text-xs fmuted max-w-[200px] sm:max-w-sm mx-auto">
+						<EmptyDescription className="text-xs fmuted max-w-50 sm:max-w-sm mx-auto">
 							Complete your first workout to view top performance
 							snapshots here.
 						</EmptyDescription>

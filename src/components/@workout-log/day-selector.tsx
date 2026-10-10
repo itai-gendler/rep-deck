@@ -249,13 +249,14 @@ export function DaySelector({
 					</div>
 				)}
 
-				<div className="fc justify-end gap-3 text-xs fmuted">
+				<div className="fc justify-end gap-1.5 text-xs fmuted">
 					<span>
 						Total Days:{" "}
 						<strong className="text-foreground">
 							{days.length}
 						</strong>
 					</span>
+					|
 					{activeDay && (
 						<span>
 							Active:{" "}

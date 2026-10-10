@@ -98,7 +98,7 @@ export function SessionHistoryList({
 						accessibilityLayer
 						data={recentBars}
 						layout="vertical"
-						margin={{ right: 60, top: 6, bottom: 6 }}
+						margin={{ right: 70, top: 6, bottom: 6 }}
 					>
 						<XAxis type="number" dataKey="volume" hide />
 						<YAxis
@@ -164,7 +164,7 @@ export function SessionHistoryList({
 										<span className="text-xs font-bold text-foreground sh0">
 											{session.date}
 										</span>
-										<span className="text-[10px] font-semibold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20 ">
+										<span className="text-[10px] font-semibold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20">
 											{session.programName} –{" "}
 											{session.dayLabel}
 										</span>

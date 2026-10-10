@@ -32,6 +32,16 @@ export function DataQualityCard({
 			/>
 
 			<CardContent className="p-4 pt-1 fcol2_5">
+				{isStale ? (
+					<div className="p-2 border border-destructive/30 bg-destructive/10 text-destructive text-xs fcy gap-2">
+						<WarningIcon className="size-4 sh0" weight="bold" />
+						<span>{status.message}</span>
+					</div>
+				) : (
+					<p className="text-[11px] text-muted-foreground">
+						{status.message}
+					</p>
+				)}
 				<div className="grid grid-cols-2 gap-2">
 					<div className="p-2 border border-border/40 bg-background/50 rounded-none">
 						<span className="ftext-2xs fmuted uppercase block">
@@ -50,17 +60,6 @@ export function DataQualityCard({
 						</span>
 					</div>
 				</div>
-
-				{isStale ? (
-					<div className="p-2 border border-destructive/30 bg-destructive/10 text-destructive text-xs fcy gap-2">
-						<WarningIcon className="size-4 sh0" weight="bold" />
-						<span>{status.message}</span>
-					</div>
-				) : (
-					<p className="text-[11px] text-muted-foreground">
-						{status.message}
-					</p>
-				)}
 			</CardContent>
 		</Card>
 	);

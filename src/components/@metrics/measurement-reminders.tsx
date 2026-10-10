@@ -51,7 +51,7 @@ export function MeasurementReminders() {
 						<span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
 							Target Tracking Days
 						</span>
-						<span className="text-[9px] text-muted-foreground">
+						<span className="ftext-xs2 text-muted-foreground">
 							{selectedDays.length} selected
 						</span>
 					</div>

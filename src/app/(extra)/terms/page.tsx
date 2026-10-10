@@ -117,7 +117,7 @@ export default function Terms() {
 										href={`#${s.id}`}
 										className="ftext-xs2 fmuted hover:text-primary base-ease fcy gap-2"
 									>
-										<span className="font-mono text-primary/60">
+										<span className=" text-primary/60">
 											{s.num}.
 										</span>
 										<span className="truncate">

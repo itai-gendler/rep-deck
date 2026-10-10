@@ -198,7 +198,7 @@ export function MuscleSizeTrend({
 
 				<ChartContainer
 					config={muscleSizeChartConfig}
-					className="h-[200px] sm:h-[220px] w-full"
+					className="h-50 sm:h-55 w-full"
 				>
 					<LineChart
 						accessibilityLayer

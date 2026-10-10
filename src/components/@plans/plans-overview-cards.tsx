@@ -106,7 +106,7 @@ function PlanCardItem({
 	};
 
 	const formattedStartDate = plan.startDate
-		? new Date(plan.startDate).toLocaleDateString("en-IN", {
+		? new Date(plan.startDate).toLocaleDateString("en-US", {
 				day: "numeric",
 				month: "short",
 				year: "numeric",

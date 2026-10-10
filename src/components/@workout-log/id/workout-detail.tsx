@@ -237,7 +237,7 @@ export function WorkoutDetail({ session, sessions = [] }: WorkoutDetailProps) {
 							)}
 						</div>
 
-						<CardTitle className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+						<CardTitle className="text-xl font-bold text-foreground fupper">
 							{session.programName}
 						</CardTitle>
 

@@ -17,11 +17,12 @@ Rep Deck is a strength-training tracker built for lifters who care about raw pro
 - **Weekday Anchoring** — Optionally anchor a plan to a calendar weekday (e.g. "Day 1 starts on Monday"). Every day in the plan derives its weekday by offset, and the workout log auto-selects today's scheduled day on load. Plans without an anchor remain pure rotations.
 - **Versioned Programs** — Duplicate a program template to fork it into a new version (v1 → v2) with the full day/exercise hierarchy preserved. Deleting a program uses `ON DELETE SET NULL` on `workoutSessions.programId`, so completed logs survive even if their source template is removed.
 - **Day Management** — Create, rename, duplicate, and delete training days. Deleting a day reindexes the remaining days in a transaction so `Day 1, 2, 3…` stay contiguous and can't collide on add.
+- **Drag-to-Reorder** — Exercises within a day can be reordered by dragging the handle. Optimistic UI applies the change instantly; a single transaction persists the new order. The workout log reads this order and renders accordingly.
 - **Progress Analytics** — Recharts-powered views for estimated 1RM across the Big 4 (Squat, Bench, Deadlift, OHP), per-lift working weight vs. estimated 1RM, upper/lower body measurement trends, session volume, and weekly training distribution.
 - **Body Metrics** — Bodyweight, body fat %, and six tape measurements. All values normalized to kg/inches at rest, converted to the user's preference on read.
 - **Data Quality Scoring** — Logging frequency is tracked per user; stale intervals and inconsistent spacing surface as warnings on the metrics page instead of silently skewing trendlines.
 - **Live PR Detection** — Per-set estimated 1RM is computed client-side (`wouldBePR`) for live feedback during entry, and again server-side (`checkIfPR`) on save. PRs are persisted as an `isPR` boolean on the set row and surfaced inline.
-- **8 Hand-Crafted Themes** — Green, Violate Eye, Rose Pine, Retro, Cosmic, Orchid, Booking, and Lime. Switching is instant and persisted via `next-themes`.
+- **8 Hand-Crafted Themes** — Green, Wheat, Rose Pine, Catppuccin, Mocha, Orchid, Frost, and Lime. Switching is instant and persisted via `next-themes`.
 - **Top-Loading Progress Bar** — `@bprogress/next` renders a 1px theme-colored bar at the top of the viewport during route transitions. Zero layout shift, no spinner.
 
 ---
@@ -31,7 +32,7 @@ Rep Deck is a strength-training tracker built for lifters who care about raw pro
 ### Core Framework & Runtime
 
 - ![Next.js](https://img.shields.io/badge/Next.js-black?logo=next.js&logoColor=white) — App Router, Server Actions, route groups (`(user)`, `(extra)`).
-- ![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB) — React Compiler enabled. No manual `useMemo` / `useCallback`.
+- ![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB) — React Compiler enabled.
 - ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff) — End-to-end types, with DB row types inferred from Drizzle schemas.
 
 ### Database & Auth
@@ -46,6 +47,8 @@ Rep Deck is a strength-training tracker built for lifters who care about raw pro
 - ![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-000?logo=shadcnui&logoColor=fff) — Headless primitives under `src/components/ui/`, styled with CVA + Tailwind.
 - ![Recharts](https://img.shields.io/badge/Recharts-22B5BF?style=flat&logo=recharts&logoColor=white) — Composable line, bar, composed, and radar charts.
 - ![Phosphor Icons](https://img.shields.io/badge/Phosphor%20Icons-3C402B?logo=phosphoricons&logoColor=fff) — `@phosphor-icons/react`, weight-controlled (`bold` / `fill` / `duotone`).
+- **Zalando Sans** — Loaded via `next/font/google`, self-hosted at build time. Geometric and neutral, matches the flat brutalist identity.
+- **@dnd-kit** — Pointer, keyboard, and touch sensors for sortable lists. Powers exercise reordering on the plans page.
 
 ### Tooling
 
@@ -56,7 +59,7 @@ Rep Deck is a strength-training tracker built for lifters who care about raw pro
 
 ## Architecture & Design Patterns 🏗️
 
-```markdown
+```plaintext
 rep-deck/
 ├── src/
 │   ├── app/                      # Next.js App Router
@@ -77,13 +80,25 @@ rep-deck/
 │   │   ├── @progress/
 │   │   ├── @workout-log/
 │   │   └── ui/                   # Design-system primitives
-│   ├── constants/                # Preset exercises, rep ranges, copy, navigation, roadmap, Versions, roadmap items, status meta
+│   ├── constants/                # Preset exercises, rep ranges, copy, navigation, roadmap
+│   │   ├── index.ts              # Barrel export
+│   │   ├── challenges.ts
+│   │   ├── exercises.ts
+│   │   ├── landing.ts
+│   │   ├── navigation.ts
+│   │   └── roadmap.ts            # Versions, roadmap items, status meta
 │   ├── db/
 │   │   ├── index.ts              # Singleton Drizzle client
 │   │   ├── schema/               # Table definitions, one file per table
 │   │   └── seed.ts               # Dev data generator
 │   ├── hooks/                    # Custom hooks, grouped by feature (-hook/)
 │   ├── lib/                      # Pure utilities + shared context providers
+│   │   ├── units.ts              # Unit conversion (kg ↔ lb, in ↔ cm)
+│   │   ├── weekday-anchor.ts     # Plan anchoring derivation helpers
+│   │   ├── big4-mapping.ts       # Canonical Big 4 exercise name resolution
+│   │   ├── contact.ts            # Mailto builders
+│   │   ├── storage.ts            # localStorage draft persistence
+│   │   └── utils.ts
 │   ├── types/                    # Shared TS types
 │   └── utils/
 │       ├── dicebear/             # Avatar generation per theme
@@ -103,7 +118,7 @@ rep-deck/
     derivedWeekday = (anchorWeekday + (dayIndex - 1)) % 7
     ```
 
-    The workout log uses the derivation to auto-select today's scheduled day. The anchor lives on the plan, not on each day — the user answers one question ("when does day 1 land?") and everything else follows. Plans without an anchor behave exactly as before: pure rotations with manual day selection.
+   The workout log uses the derivation to auto-select today's scheduled day. The anchor lives on the plan, not on each day — the user answers one question ("when does day 1 land?") and everything else follows. Plans without an anchor behave exactly as before: pure rotations with manual day selection.
 
 2. **Session Date as a User-Controlled Field**
    `workoutSessions.date` is not a DB default — it's a required field passed from the client. This lets users backdate a missed session without the app silently rewriting history. A separate `createdAt` column records when the row was entered, providing a tiebreak for same-day sessions. If the plan is anchored and the selected date maps to a specific day, the day selector syncs automatically; if the user overrides the day, the override sticks until the date changes.
@@ -111,22 +126,25 @@ rep-deck/
 3. **Versioned Program Templates**
    Duplicating a program creates a new `programTemplates` row with an incremented version and deep-copies the full day/exercise tree. Deleting a program uses `ON DELETE SET NULL` on `workoutSessions.programId`, so completed logs survive even if their source template is removed. In-place editing of a running template is currently supported; fork-on-edit immutability is a v0.4.0 roadmap item.
 
-4. **Estimated 1RM Engine**
+4. **Exercise Ordering Without Mutating History**
+   `exerciseTemplates.order` is the display order within a day. Reordering writes contiguous `1..N` positions in a single transaction. The workout log reads the plan and renders in that order; history reads from `workoutSets` and is unaffected. Because the reorder is an `UPDATE` (not delete-and-insert), `templateId` references stay stable and no cascade fires.
+
+5. **Estimated 1RM Engine**
    Per-set estimated 1RM is computed using the Epley formula:
 
-    ```math
-    1RM = weight × (1 + reps / 30)
-    ```
+   ```
+   1RM = weight × (1 + reps / 30)
+   ```
 
-    At save time, `checkIfPR()` compares the new set's estimated 1RM against every prior set for the same exercise and persists an `isPR` boolean on the row. The 1RM number itself is never stored — it's recomputed on read, so raw `weight` and `reps` remain the source of truth and a formula change never requires a migration.
+   At save time, `checkIfPR()` compares the new set's estimated 1RM against every prior set for the same exercise and persists an `isPR` boolean on the row. The 1RM number itself is never stored — it's recomputed on read, so raw `weight` and `reps` remain the source of truth and a formula change never requires a migration.
 
-5. **Global Unit Normalization**
+6. **Global Unit Normalization**
    All weights are stored in **kilograms** and all body measurements in **inches**. Conversion happens exclusively at the view layer via `UnitProvider` (`src/components/@common/unit-provider.tsx`), which reads the user's preferences and exposes `fmtWeight` / `toKg` / `fmtMeasurement` / `toIn` helpers. The database never sees `lb` or `cm`.
 
-6. **Zero-Radius Flat UI**
-   A single `--radius: 0` declaration on `:root` in `themes.css` applies across all 8 themes, preserving the flat brutalist identity. Themes attach via class on `<html>` and CSS custom properties, managed by `next-themes` with no hydration flash.
+7. **Zero-Radius Flat UI**
+   A single `--radius: 0` declaration on `:root` in `themes.css` applies across all 8 themes, preserving the flat brutalist identity. Themes attach via class on `<html>` and CSS custom properties, managed by `next-themes` with no hydration flash. Zalando Sans provides a geometric, neutral typeface that reinforces the aesthetic.
 
-7. **Server Actions as the API Surface**
+8. **Server Actions as the API Surface**
    Every mutation lives in `src/actions/`, grouped by domain. Pages import actions; actions never import from `src/components/`. Auth is checked inside each action via `getCurrentUser()` — Server Actions are reachable from anywhere and never assume the caller is authenticated.
 
 ---
@@ -140,6 +158,7 @@ Current version: **v0.3.0 — Program Flexibility**
 - [x] **Versioned programs** — Duplicate a plan into a new version without losing session history. Activate any version from the plans page.
 - [x] **Day management** — Create, rename, duplicate, and delete days. Deleting a day reindexes the rest so Day 1, 2, 3 stay contiguous.
 - [x] **Weekday anchoring** — Optionally anchor a plan to a weekday. The workout log auto-selects today's scheduled day, with manual override.
+- [x] **Exercise reordering** — Drag exercises within a day to reorder. Optimistic UI plus a transactional write to the plan.
 
 ### v0.4.0 — Insights _(in progress)_
 
@@ -197,63 +216,63 @@ Current version: **v0.3.0 — Program Flexibility**
 
 1. **Clone the repository**
 
-    ```bash
-    git clone https://github.com/rudra-xi/rep-deck.git
-    cd rep-deck
-    ```
+   ```bash
+   git clone https://github.com/rudra-xi/rep-deck.git
+   cd rep-deck
+   ```
 
 2. **Install dependencies**
 
-    ```bash
-    bun install
-    ```
+   ```bash
+   bun install
+   ```
 
 3. **Configure environment variables**
 
-    Create `.env.local` (or `.env`) at the project root:
+   Create `.env.local` (or `.env`) at the project root:
 
-    ```env
-    # Runtime connection — Supavisor pooler, port 6543
-    DATABASE_URL="postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?sslmode=require"
+   ```env
+   # Runtime connection — Supavisor pooler, port 6543
+   DATABASE_URL="postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres?sslmode=require"
 
-    # Migration connection — direct, port 5432. Drizzle Kit reads this one.
-    DIRECT_URL="postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres?sslmode=require"
+   # Migration connection — direct, port 5432. Drizzle Kit reads this one.
+   DIRECT_URL="postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:5432/postgres?sslmode=require"
 
-    # Supabase auth
-    NEXT_PUBLIC_SUPABASE_URL="https://<project-ref>.supabase.co"
-    NEXT_PUBLIC_SUPABASE_ANON_KEY="<your-anon-key>"
+   # Supabase auth
+   NEXT_PUBLIC_SUPABASE_URL="https://<project-ref>.supabase.co"
+   NEXT_PUBLIC_SUPABASE_ANON_KEY="<your-anon-key>"
 
-    # OAuth callback origin
-    NEXT_PUBLIC_APP_URL="http://localhost:3000"
+   # OAuth callback origin
+   NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
-    # Optional — required only for the seed script
-    # Must match an existing row in `users.id` (Supabase auth UUID)
-    SEED_USER_ID="<your-supabase-auth-user-uuid>"
-    ```
+   # Optional — required only for the seed script
+   # Must match an existing row in `users.id` (Supabase auth UUID)
+   SEED_USER_ID="<your-supabase-auth-user-uuid>"
+   ```
 
-    > `DATABASE_URL` (pooler) is used at runtime to avoid connection exhaustion in serverless. `DIRECT_URL` (direct) is used by Drizzle Kit for migrations — DDL does not survive connection pooling.
+   > `DATABASE_URL` (pooler) is used at runtime to avoid connection exhaustion in serverless. `DIRECT_URL` (direct) is used by Drizzle Kit for migrations — DDL does not survive connection pooling.
 
 4. **Initialize the database**
 
-    ```bash
-    # Push schema definitions to DIRECT_URL
-    bunx drizzle-kit push
+   ```bash
+   # Push schema definitions to DIRECT_URL
+   bunx drizzle-kit push
 
-    # (Optional) Seed ~6 months of sample data:
-    #   ~100 workout sessions with realistic progression
-    #   26 weekly body measurements
-    #   3 versioned programs (v1 + v2 archived, v3 active)
-    # Requires SEED_USER_ID to be set and the user to already exist.
-    bun src/db/seed.ts
-    ```
+   # (Optional) Seed ~6 months of sample data:
+   #   ~100 workout sessions with realistic progression
+   #   26 weekly body measurements
+   #   3 versioned programs (v1 + v2 archived, v3 active)
+   # Requires SEED_USER_ID to be set and the user to already exist.
+   bun src/db/seed.ts
+   ```
 
 5. **Run the development server**
 
-    ```bash
-    bun dev
-    ```
+   ```bash
+   bun dev
+   ```
 
-    Navigate to [http://localhost:3000](http://localhost:3000).
+   Navigate to [http://localhost:3000](http://localhost:3000).
 
 ### Google OAuth Setup
 
@@ -262,26 +281,26 @@ Rep Deck authenticates via Supabase, which brokers Google OAuth. If you're deplo
 1. **Create a Google Cloud project** at [console.cloud.google.com](https://console.cloud.google.com).
 
 2. **Configure the OAuth consent screen** under _Google Auth Platform → Branding_:
-    - **User type:** External _(Internal is only available to Google Workspace organizations)_
-    - **App name:** Rep Deck
-    - **Support email:** your email
-    - **App logo:** optional
-    - **Application home page:** `https://<your-deployment>`
-    - **Privacy policy:** `https://<your-deployment>/privacy`
-    - **Terms of service:** `https://<your-deployment>/terms`
+   - **User type:** External _(Internal is only available to Google Workspace organizations)_
+   - **App name:** Rep Deck
+   - **Support email:** your email
+   - **App logo:** optional
+   - **Application home page:** `https://<your-deployment>`
+   - **Privacy policy:** `https://<your-deployment>/privacy`
+   - **Terms of service:** `https://<your-deployment>/terms`
 
 3. **Add yourself as a Test user** under _Audience → Test users_. While the app is in Testing mode, only these emails can sign in.
 
 4. **Create an OAuth 2.0 Client ID** under _Clients → Create Client_:
-    - **Application type:** Web application
-    - **Authorized JavaScript origins:** `https://<your-deployment>`
-    - **Authorized redirect URIs:** `https://<project-ref>.supabase.co/auth/v1/callback`
+   - **Application type:** Web application
+   - **Authorized JavaScript origins:** `https://<your-deployment>`
+   - **Authorized redirect URIs:** `https://<project-ref>.supabase.co/auth/v1/callback`
 
 5. **Paste the Client ID and Client Secret** into _Supabase → Authentication → Providers → Google_. Enable the provider.
 
 6. **Update Supabase URL Configuration** under _Authentication → URL Configuration_:
-    - **Site URL:** `https://<your-deployment>`
-    - **Redirect URLs:** add `https://<your-deployment>/auth/callback` and any preview URLs you use.
+   - **Site URL:** `https://<your-deployment>`
+   - **Redirect URLs:** add `https://<your-deployment>/auth/callback` and any preview URLs you use.
 
 > **Note on `.vercel.app` domains:** Google's branding verification rejects `.vercel.app` subdomains because you don't own the root domain. If you're deploying on Vercel, either attach a custom domain for a clean consent screen, or accept the "unverified app" warning that Google shows for unverified OAuth clients. Login still works in both cases — the warning is cosmetic.
 
@@ -309,4 +328,4 @@ Developed by **rudra-xi**.
 - [![GitHub](https://img.shields.io/badge/GitHub-%23121011.svg?logo=github&logoColor=white)](https://github.com/rudra-xi)
 - [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?logo=linkedin&logoColor=fff)](https://www.linkedin.com/in/goutam-rudraxi)
 
-Distributed under the [![MIT License](https://img.shields.io/badge/MIT%20License-FFFFFF)](#). Read [`LICENSE.md`](./LICENSE.md) for details.
+Distributed under the [![MIT License](https://img.shields.io/badge/MIT%20License-FFFFFF)](./LICENSE.md). Read [`LICENSE.md`](./LICENSE.md) for details.

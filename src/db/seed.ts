@@ -49,6 +49,7 @@ async function seedPrograms() {
 		.delete(programTemplates)
 		.where(eq(programTemplates.userId, SEED_USER_ID));
 
+	// ─── v1 — Hypertrophy Foundation (archived) ─────────────────────────
 	const [v1] = await db
 		.insert(programTemplates)
 		.values({
@@ -57,6 +58,7 @@ async function seedPrograms() {
 			version: 1,
 			startDate: daysAgo(365),
 			endDate: daysAgo(240),
+			anchorWeekday: 1, // Monday
 			active: false,
 		})
 		.returning();
@@ -197,6 +199,7 @@ async function seedPrograms() {
 		},
 	]);
 
+	// ─── v2 — Strength Block (archived) ─────────────────────────────────
 	const [v2] = await db
 		.insert(programTemplates)
 		.values({
@@ -205,6 +208,7 @@ async function seedPrograms() {
 			version: 2,
 			startDate: daysAgo(240),
 			endDate: daysAgo(120),
+			anchorWeekday: 1, // Monday
 			active: false,
 		})
 		.returning();
@@ -349,6 +353,7 @@ async function seedPrograms() {
 		},
 	]);
 
+	// ─── v3 — Power & Peak (active) ─────────────────────────────────────
 	const [v3] = await db
 		.insert(programTemplates)
 		.values({
@@ -356,6 +361,7 @@ async function seedPrograms() {
 			name: "Power & Peak",
 			version: 3,
 			startDate: daysAgo(120),
+			anchorWeekday: 1, // Monday — day 1 is Mon, day 2 Tue, day 3 Wed, ...
 			active: true,
 		})
 		.returning();
@@ -372,9 +378,10 @@ async function seedPrograms() {
 		.insert(programDayTemplates)
 		.values({ programId: v3.id, dayIndex: 3, label: "Squat Focus" })
 		.returning();
-	await db
+	const [v3d4] = await db
 		.insert(programDayTemplates)
-		.values({ programId: v3.id, dayIndex: 4, label: "Rest" });
+		.values({ programId: v3.id, dayIndex: 4, label: "Rest" })
+		.returning();
 	const [v3d5] = await db
 		.insert(programDayTemplates)
 		.values({ programId: v3.id, dayIndex: 5, label: "Hypertrophy Push" })
@@ -532,11 +539,14 @@ async function seedPrograms() {
 	]);
 
 	console.log("✓ Programs seeded:");
-	console.log("  • v1 — Hypertrophy Foundation (archived)");
-	console.log("  • v2 — Strength Block (archived)");
-	console.log("  • v3 — Power & Peak (active)");
+	console.log("  • v1 — Hypertrophy Foundation (archived, Mon-anchored)");
+	console.log("  • v2 — Strength Block (archived, Mon-anchored)");
+	console.log("  • v3 — Power & Peak (active, Mon-anchored)");
 
-	return { v3 };
+	return {
+		v3,
+		v3Days: { d1: v3d1, d2: v3d2, d3: v3d3, d4: v3d4, d5: v3d5, d6: v3d6 },
+	};
 }
 
 const LIFT_TARGETS = {
@@ -581,6 +591,12 @@ function targetWeight(
 	return { weight: w, isDeload };
 }
 
+// Epley formula — same one the app uses in checkIfPR.
+function estimate1RM(weight: number, reps: number): number {
+	if (reps <= 1) return weight;
+	return weight * (1 + reps / 30);
+}
+
 async function seedWorkouts(programIds: { v3: any }) {
 	await db
 		.delete(workoutSessions)
@@ -600,6 +616,10 @@ async function seedWorkouts(programIds: { v3: any }) {
 	const setsToInsert: any[] = [];
 	let actualSessions = 0;
 	const liftCounters = { squat: 0, bench: 0, deadlift: 0, ohp: 0 };
+
+	// Running max estimated 1RM per exercise name. This is what drives
+	// real PR detection — the same logic the app's checkIfPR runs on save.
+	const maxE1RMByExercise: Record<string, number> = {};
 
 	for (let i = 0; i < TOTAL_SESSIONS; i++) {
 		const daysBack = Math.floor(START_DAYS_AGO - i * 1.82);
@@ -635,6 +655,7 @@ async function seedWorkouts(programIds: { v3: any }) {
 			i,
 			TOTAL_SESSIONS,
 			liftCounters,
+			maxE1RMByExercise,
 			session.id,
 		);
 		setsToInsert.push(...setsForDay);
@@ -665,6 +686,8 @@ function generateSetsForDay(
 		deadlift: number;
 		ohp: number;
 	},
+	// Running max e1RM per exercise. Mutated in place as sets are generated.
+	maxE1RMByExercise: Record<string, number>,
 	sessionId: string,
 ) {
 	const sets: any[] = [];
@@ -680,7 +703,6 @@ function generateSetsForDay(
 	) => {
 		for (let s = 1; s <= setsCount; s++) {
 			let weight: number;
-			let isPR = false;
 
 			if (opts.lift) {
 				const liftIdx = liftCounters[opts.lift];
@@ -692,12 +714,6 @@ function generateSetsForDay(
 					totalLiftSessions,
 				);
 				weight = result.weight;
-
-				isPR =
-					s === 1 &&
-					liftIdx > 3 &&
-					liftIdx % 8 === 0 &&
-					!result.isDeload;
 			} else {
 				const base = opts.baseWeight ?? 20;
 				const progressionStep = 1.25;
@@ -707,6 +723,16 @@ function generateSetsForDay(
 					(rand(sessionIndex * 5 + exerciseName.length) - 0.5) * 2;
 				weight *= 1 + 0.03 * jit;
 				weight = Math.round(weight / 1.25) * 1.25;
+			}
+
+			// Real PR detection: compare this set's e1RM against the
+			// running max for this exercise across all prior sessions.
+			const currentE1RM = estimate1RM(weight, reps);
+			const previousMax = maxE1RMByExercise[exerciseName] ?? 0;
+			const isPR = currentE1RM > previousMax;
+
+			if (isPR) {
+				maxE1RMByExercise[exerciseName] = currentE1RM;
 			}
 
 			const rpe =
@@ -824,9 +850,9 @@ async function seed() {
 
 	console.log("\n✅ Done!\n");
 	console.log("Programs:");
-	console.log("  v1 — Hypertrophy Foundation  (archived, ~4mo ago)");
-	console.log("  v2 — Strength Block           (archived, ~2mo ago)");
-	console.log("  v3 — Power & Peak             (active)\n");
+	console.log("  v1 — Hypertrophy Foundation  (archived, Mon-anchored)");
+	console.log("  v2 — Strength Block           (archived, Mon-anchored)");
+	console.log("  v3 — Power & Peak             (active, Mon-anchored)\n");
 	console.log("Lift anchors (with deloads + jitter):");
 	console.log("  • Squat:    105 kg → 148 kg");
 	console.log("  • Bench:     75 kg →  95 kg");
@@ -834,6 +860,9 @@ async function seed() {
 	console.log("  • OHP:       50 kg → 62.5 kg");
 	console.log("  • Weight:    78 kg →  74 kg (±0.3 noise)");
 	console.log("  • Body fat:  18% →  13%\n");
+	console.log("PR detection:");
+	console.log("  • Computed from real e1RM comparisons (Epley)");
+	console.log("  • Matches the app's checkIfPR logic\n");
 
 	process.exit(0);
 }

@@ -211,7 +211,6 @@ export async function getRecentSessions(limit = 5) {
 			),
 		);
 
-		// ── Program day labels (once) ──
 		const dayRows = programIds.length
 			? await db
 					.select({
@@ -231,7 +230,6 @@ export async function getRecentSessions(limit = 5) {
 			);
 		}
 
-		// ── Program names (once) — MOVED OUT OF THE MAP ──
 		const programRows = programIds.length
 			? await db
 					.select({
@@ -247,7 +245,6 @@ export async function getRecentSessions(limit = 5) {
 			programNameMap.set(row.id, toCapitalized(row.name));
 		}
 
-		// ── Now the map is fully synchronous ──
 		return sessions.map((s) => {
 			const sets = allSets.filter((set) => set.sessionId === s.id);
 

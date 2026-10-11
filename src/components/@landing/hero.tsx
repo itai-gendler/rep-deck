@@ -51,13 +51,17 @@ export const Hero = () => {
 					</h1>
 
 					<p className="text-muted-foreground text-sm sm:text-base lg:text-lg max-w-md sm:max-w-xl mx-auto lg:mx-0 leading-relaxed mt-5 sm:mt-7">
-						Log every set in seconds. Anchor your plan to a weekday
-						and the app shows you the right day. Track real strength
-						gains, analyze body composition, and never guess what
-						you lifted last week.
+						Anchor your plan to a weekday and the app shows today's
+						session. Log every set with last week's numbers right
+						beside the input. See strength, size, and consistency
+						trend over time — without a spreadsheet.
 					</p>
 
-					<div className="fcol sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-7 sm:pt-9">
+					<p className="text-sm fmuted italic pt-9 tracking-wide">
+						~ designed by lifters, for lifters.
+					</p>
+
+					<div className="fcol sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-3">
 						<GoogleBtn
 							text="Start Tracking Free"
 							icon={<GoogleLogoIcon />}

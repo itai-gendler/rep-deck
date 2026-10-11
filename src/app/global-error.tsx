@@ -18,7 +18,7 @@ export default function RootGlobalError({
 	}, [error]);
 
 	return (
-		<html lang="en" className="violateeye h-full" suppressHydrationWarning>
+		<html lang="en" className="mocha h-full" suppressHydrationWarning>
 			<body className="min-h-screen fc p-6 bg-background text-foreground antialiased">
 				<div className="w-full max-w-md">
 					<div className="fcard-flat p-8 sm:p-10 text-center">

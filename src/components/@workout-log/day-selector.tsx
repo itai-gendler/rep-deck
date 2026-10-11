@@ -231,7 +231,7 @@ export function DaySelector({
 								>
 									{isActive && (
 										<CheckCircleIcon
-											className="size-3.5 text-primary-foreground"
+											className="size-3.5 text-popover-foreground"
 											weight="bold"
 										/>
 									)}

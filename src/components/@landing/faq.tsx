@@ -43,7 +43,7 @@ export const FAQ = () => {
 					</p>
 				</div>
 
-				<Accordion className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+				<Accordion className="fcol2 max-w-3xl mx-auto">
 					{faqData.map((item) => {
 						const QuestionSpecificIcon =
 							faqIconMap[item.id as keyof typeof faqIconMap] ||

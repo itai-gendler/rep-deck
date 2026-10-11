@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
-import { Oxanium } from "next/font/google";
+import { Zalando_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import LayoutProvider from "./provider";
 
-const oxanium = Oxanium({ subsets: ["latin"], variable: "--font-sans" });
+const zalandoSans = Zalando_Sans({
+	subsets: ["latin"],
+	variable: "--font-sans",
+	display: "swap",
+});
 
 export const metadata: Metadata = {
 	title: {
@@ -78,7 +82,7 @@ export default function RootLayout({
 				"h-full",
 				"antialiased",
 				"font-sans",
-				oxanium.variable,
+				zalandoSans.variable,
 			)}
 		>
 			<body className="min-h-screen fcol">

@@ -1,15 +1,15 @@
 "use client";
 
 import {
-	CalendarCheckIcon,
 	CatIcon,
-	EyeIcon,
+	CoffeeIcon,
 	FlowerIcon,
 	FlowerLotusIcon,
+	GrainsIcon,
 	LeafIcon,
 	PaintBrushIcon,
-	PlanetIcon,
 	PlantIcon,
+	SnowflakeIcon,
 } from "@phosphor-icons/react";
 import { CardsHeader } from "@/common";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,12 +20,12 @@ import { cn } from "@/lib/utils";
 
 const THEME_ICONS: Record<ThemeSlug, React.ElementType> = {
 	green: PlantIcon,
-	violateeye: EyeIcon,
+	wheat: GrainsIcon,
 	rosepine: FlowerIcon,
 	catppuccin: CatIcon,
-	cosmic: PlanetIcon,
+	mocha: CoffeeIcon,
 	orchid: FlowerLotusIcon,
-	booking: CalendarCheckIcon,
+	frost: SnowflakeIcon,
 	lime: LeafIcon,
 };
 

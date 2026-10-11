@@ -1,17 +1,17 @@
 export const AVATAR_PALETTES = {
-	green: { backgroundColor: "1e293b", shapeColor: "aff33e" },
-	violateeye: { backgroundColor: "1d1b30", shapeColor: "846feb" },
+	mocha: { backgroundColor: "313244", shapeColor: "cba6f7" },
 	rosepine: { backgroundColor: "403d52", shapeColor: "e0def4" },
-	retro: { backgroundColor: "262626", shapeColor: "f36a2d" },
-	cosmic: { backgroundColor: "252e3d", shapeColor: "9690f1" },
+	catppuccin: { backgroundColor: "585b70", shapeColor: "cba6f7" },
 	orchid: { backgroundColor: "35334d", shapeColor: "b2a5e9" },
-	booking: { backgroundColor: "1c1b37", shapeColor: "f7514b" },
+	frost: { backgroundColor: "1b273a", shapeColor: "fafafa" },
 	lime: { backgroundColor: "303030", shapeColor: "d9e96e" },
+	green: { backgroundColor: "1e293b", shapeColor: "aff33e" },
+	wheat: { backgroundColor: "2a3646", shapeColor: "c4a164" },
 } as const;
 
 export type ThemeSlug = keyof typeof AVATAR_PALETTES;
 
-export const DEFAULT_THEME: ThemeSlug = "violateeye";
+export const DEFAULT_THEME: ThemeSlug = "mocha";
 
 export function getDiceBearAvatarUrl(
 	seed: string,

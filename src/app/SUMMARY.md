@@ -104,7 +104,7 @@ below depends on this provider.
   `<LayoutProvider>`. Owns the full metadata object (OG, Twitter,
   keywords, icons).
 - `provider.tsx` — `"use client"`. Mounts `ThemeProvider` (next-themes,
-  default `violateeye`, 8 themes), conditionally renders `Navigation` and
+  default `mocha`, 8 themes), conditionally renders `Navigation` and
   `Footer` (hidden on `/`), mounts `<Toaster>`.
 - `not-found.tsx` — 404 UI. Brand + "Back to dashboard" / "Home".
 - `error.tsx` — route-level error boundary. Reset + Home buttons.

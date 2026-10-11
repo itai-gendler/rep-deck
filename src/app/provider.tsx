@@ -15,16 +15,16 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
 	return (
 		<ThemeProvider
 			attribute="class"
-			defaultTheme="violateeye"
+			defaultTheme="mocha"
 			enableSystem={false}
 			themes={[
 				"green",
-				"violateeye",
+				"wheat",
 				"rosepine",
-				"retro",
-				"cosmic",
+				"catppuccin",
+				"mocha",
 				"orchid",
-				"booking",
+				"frost",
 				"lime",
 			]}
 			disableTransitionOnChange

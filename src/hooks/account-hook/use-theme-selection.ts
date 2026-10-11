@@ -5,14 +5,14 @@ import { toast } from "sonner";
 import { useMounted } from "./use-mounted";
 
 export const THEME_OPTIONS = [
-	{ value: "violateeye", label: "Violate Eye" },
-	{ value: "green", label: "Light Green" },
+	{ value: "mocha", label: "Mocha" },
 	{ value: "rosepine", label: "Rose Pine" },
-	{ value: "retro", label: "Retro" },
-	{ value: "cosmic", label: "Cosmic" },
+	{ value: "catppuccin", label: "Catppuccin" },
 	{ value: "orchid", label: "Orchid" },
-	{ value: "booking", label: "Booking" },
+	{ value: "frost", label: "Frost" },
+	{ value: "green", label: "Light Green" },
 	{ value: "lime", label: "Lime" },
+	{ value: "wheat", label: "Wheat" },
 ] as const;
 
 export type ThemeSlug = (typeof THEME_OPTIONS)[number]["value"];

@@ -17,7 +17,7 @@ type ExerciseInputsState = Record<string, ExerciseState>;
 
 const VALIDATION = {
 	weight: { min: 0, max: 1000 },
-	reps: { min: 1, max: 100 },
+	reps: { min: 1, max: 1000 },
 	rpe: { min: 0, max: 10 },
 } as const;
 

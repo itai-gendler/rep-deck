@@ -145,7 +145,9 @@ export function EditExerciseDialog({
 							</span>
 							<Combobox
 								items={PRESET_EXERCISES}
-								itemToStringValue={(item: PresetExercise | string | null) =>
+								itemToStringValue={(
+									item: PresetExercise | string | null,
+								) =>
 									item == null
 										? ""
 										: typeof item === "string"
@@ -157,7 +159,9 @@ export function EditExerciseDialog({
 								<ComboboxInput
 									placeholder="Search or type exercise name..."
 									value={exerciseName}
-									onChange={(e) => setExerciseName(e.target.value)}
+									onChange={(e) =>
+										setExerciseName(e.target.value)
+									}
 									className="rounded-none h-8 text-xs border-border/50 bg-background/50 focus:border-primary/50 w-full"
 									autoFocus
 								/>
@@ -225,7 +229,9 @@ export function EditExerciseDialog({
 									onValueChange={(val: string | null) =>
 										targetRepRange.setValue(val ?? "")
 									}
-									itemToStringValue={(item: string | null) => item ?? ""}
+									itemToStringValue={(item: string | null) =>
+										item ?? ""
+									}
 								>
 									<ComboboxInput
 										placeholder="8-12"

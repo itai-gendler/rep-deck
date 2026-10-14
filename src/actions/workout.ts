@@ -566,7 +566,7 @@ export async function getWorkoutSessionDetails(sessionId: string) {
 			id: session.id,
 			rawDate: session.date.toISOString(),
 			date: new Date(session.date).toLocaleDateString("en-US", {
-			weekday: "short",
+				weekday: "short",
 				day: "numeric",
 				month: "short",
 				year: "numeric",

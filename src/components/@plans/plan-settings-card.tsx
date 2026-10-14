@@ -170,10 +170,10 @@ export function PlanSettingsCard({
 						>
 							<SelectTrigger className="rounded-none h-8 text-xs border-border/50 bg-background/50">
 								<SelectValue>
-										{anchor === NO_ANCHOR
-											? "Rotation"
-											: `Starts on ${WEEKDAY_NAMES[Number(anchor)]}`}
-									</SelectValue>
+									{anchor === NO_ANCHOR
+										? "Rotation"
+										: `Starts on ${WEEKDAY_NAMES[Number(anchor)]}`}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent className="rounded-none">
 								<SelectItem

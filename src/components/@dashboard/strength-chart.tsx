@@ -108,10 +108,7 @@ export function StrengthChart({
 
 	if (!hasData) {
 		return (
-			<Card
-				size="sm"
-				className="fcard-flat relative min-h-75 w-full"
-			>
+			<Card size="sm" className="fcard-flat relative min-h-75 w-full">
 				<Empty className="p-8 text-center w-full">
 					<EmptyHeader>
 						<EmptyMedia className="ficon-box-lg">

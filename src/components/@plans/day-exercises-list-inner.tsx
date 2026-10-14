@@ -35,11 +35,11 @@ import {
 	EmptyTitle,
 } from "@/components/ui/empty";
 import type { DayWithExercises } from "@/db/schema";
+import { useMediaQuery } from "@/hooks";
 import { deriveWeekdayShort } from "@/lib/weekday-anchor";
 import { CreateExerciseDialog } from "@/plan-dialogs";
 import { DayExercisesListSkeleton } from "@/skeletons";
 import { SortableExerciseRow } from "./sortable-exercise-row";
-import { useMediaQuery } from "@/hooks";
 
 export interface DayExercisesListInnerProps {
 	day?: DayWithExercises;

@@ -58,7 +58,7 @@ export const PRESET_EXERCISES = [
 	// ── Neck ──
 	{ name: "Neck Harness Extensions", type: "Neck" },
 	{ name: "Lying Neck Flexion", type: "Neck" },
-	
+
 	// ── Lats ──
 	{ name: "Lat Pulldown", type: "Lats" },
 	{ name: "Pull-Ups", type: "Lats" },

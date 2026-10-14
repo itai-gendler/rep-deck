@@ -152,7 +152,7 @@ export async function getDashboardData() {
 
 			const sessionDate = new Date(lastSession.date);
 			const formattedDate = sessionDate.toLocaleDateString("en-US", {
-				weekday:"long",
+				weekday: "long",
 				day: "numeric",
 				month: "short",
 				year: "numeric",

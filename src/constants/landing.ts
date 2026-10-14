@@ -70,10 +70,10 @@ export const faqData = [
 		answer: "No — you can log ad-hoc sets any time. But creating a plan unlocks the planned-exercise workflow, which pre-fills targets and shows last session's numbers for each lift.",
 	},
 	{
-			id: 3,
-			question: "How does Google login work?",
-			answer: "Sign in with Google in one click. Your progress syncs across devices automatically — no passwords to remember.",
-		},
+		id: 3,
+		question: "How does Google login work?",
+		answer: "Sign in with Google in one click. Your progress syncs across devices automatically — no passwords to remember.",
+	},
 	{
 		id: 4,
 		question: "Can I switch between programs without losing history?",

@@ -19,13 +19,17 @@ export function CardsHeader({
 	className,
 }: CardsHeaderProps) {
 	return (
-		<CardHeader className={cn("p-4 pb-2 text-xs", className)}>
-			<CardTitle className="font-bold fupper text-foreground fcb gap-2.5">
-				<div className="fcy gap-2.5 min-w-0">
-					<div className="ficon-box sh0">
-						<Icon className="size-4" weight="bold" />
+		<CardHeader className={cn("p-4 pb-2", className)}>
+			<CardTitle className="fcb gap-3">
+				<div className="fcy gap-2.5 min-w-0 flex-1">
+					<div className="ficon-box-sm sh0">
+						<Icon className="size-3.5" weight="bold" />
 					</div>
-					<span className="truncate">{title}</span>
+					<div className="fcol min-w-0">
+						<span className="text-xs font-bold fupper text-foreground truncate">
+							{title}
+						</span>
+					</div>
 				</div>
 				{trailing && <div className="fcy gap-1.5 sh0">{trailing}</div>}
 			</CardTitle>

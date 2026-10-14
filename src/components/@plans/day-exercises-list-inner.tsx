@@ -39,6 +39,7 @@ import { deriveWeekdayShort } from "@/lib/weekday-anchor";
 import { CreateExerciseDialog } from "@/plan-dialogs";
 import { DayExercisesListSkeleton } from "@/skeletons";
 import { SortableExerciseRow } from "./sortable-exercise-row";
+import { useMediaQuery } from "@/hooks";
 
 export interface DayExercisesListInnerProps {
 	day?: DayWithExercises;
@@ -55,6 +56,8 @@ export function DayExercisesListInner({
 	const [optimisticOrder, setOptimisticOrder] = useState<string[] | null>(
 		null,
 	);
+
+	const isDesktop = useMediaQuery("(min-width: 768px)");
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
@@ -192,38 +195,50 @@ export function DayExercisesListInner({
 							items={exercises.map((e) => e.id)}
 							strategy={verticalListSortingStrategy}
 						>
-							<table className="w-full table-fixed text-left text-xs border-collapse">
-								<thead>
-									<tr className="border-b border-border/50 ftext-xs2 fmuted fupper font-medium">
-										<th className="w-8 py-2 pl-2 pr-0" />
-										<th className="py-2 pl-3 pr-2 text-left">
-											Exercise
-										</th>
-										<th className="w-[20%] py-2 px-2 text-left">
-											Type
-										</th>
-										<th className="w-[10%] py-2 px-2 text-center">
-											Sets
-										</th>
-										<th className="w-[15%] py-2 px-2 text-center">
-											Reps
-										</th>
-										<th className="w-[20%] py-2 pr-3 text-right">
-											Actions
-										</th>
-									</tr>
-								</thead>
-								<tbody className="divide-y divide-border/30">
+							{isDesktop ? (
+								<table className="w-full table-fixed text-left text-xs border-collapse">
+									<thead>
+										<tr className="border-b border-border/50 text-[11px] text-muted-foreground uppercase font-medium">
+											<th className="w-8 py-2 pl-2 pr-0" />
+											<th className="py-2 px-2 text-left">
+												Exercise
+											</th>
+											<th className="w-[10%] py-2 px-2 text-center">
+												Sets
+											</th>
+											<th className="w-[20%] py-2 px-2 text-center">
+												Reps
+											</th>
+											<th className="w-[15%] py-2 pl-1 pr-2 text-right">
+												Actions
+											</th>
+										</tr>
+									</thead>
+									<tbody className="divide-y divide-border/30">
+										{exercises.map((ex) => (
+											<SortableExerciseRow
+												key={ex.id}
+												exercise={ex}
+												variant="row"
+												onEdit={handleEditExercise}
+												onDelete={handleDeleteExercise}
+											/>
+										))}
+									</tbody>
+								</table>
+							) : (
+								<div className="flex flex-col gap-2">
 									{exercises.map((ex) => (
 										<SortableExerciseRow
 											key={ex.id}
 											exercise={ex}
+											variant="card"
 											onEdit={handleEditExercise}
 											onDelete={handleDeleteExercise}
 										/>
 									))}
-								</tbody>
-							</table>
+								</div>
+							)}
 						</SortableContext>
 					</DndContext>
 				)}

@@ -93,7 +93,7 @@ export function PlanSettingsCard({
 		<Card size="sm" className="fcard-flat card-ease">
 			<CardsHeader
 				icon={GearIcon}
-				title={`Configuration: ${plan.name} • v${plan.version}`}
+				title={`${plan.name} • v${plan.version}`}
 			/>
 
 			<CardContent className="p-4 pt-1 fcol4">

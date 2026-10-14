@@ -3,11 +3,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { DotsSixVerticalIcon } from "@phosphor-icons/react";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { ExerciseTemplate } from "@/db/schema";
 import { cn } from "@/lib/utils";
@@ -15,6 +11,7 @@ import { DeleteExerciseDialog, EditExerciseDialog } from "@/plan-dialogs";
 
 interface SortableExerciseRowProps {
 	exercise: ExerciseTemplate;
+	variant: "card" | "row";
 	onEdit: (
 		exerciseId: string,
 		data: {
@@ -29,6 +26,7 @@ interface SortableExerciseRowProps {
 
 export function SortableExerciseRow({
 	exercise,
+	variant,
 	onEdit,
 	onDelete,
 }: SortableExerciseRowProps) {
@@ -44,9 +42,85 @@ export function SortableExerciseRow({
 	const style = {
 		transform: CSS.Transform.toString(transform),
 		transition,
-		zIndex: isDragging ? 10 : undefined,
+		zIndex: isDragging ? 50 : undefined,
 		opacity: isDragging ? 0.9 : 1,
 	};
+
+	const handle = (
+		<button
+			type="button"
+			{...attributes}
+			{...listeners}
+			className={cn(
+				"fc cursor-grab touch-none rounded-none transition-colors active:cursor-grabbing",
+				variant === "card"
+					? "w-8 shrink-0 border border-border/30 bg-muted/20 text-muted-foreground/60 hover:text-foreground"
+					: "size-6 text-muted-foreground/50 hover:text-foreground",
+			)}
+			aria-label={`Reorder ${exercise.name}`}
+		>
+			<DotsSixVerticalIcon className="size-4" weight="bold" />
+		</button>
+	);
+
+	if (variant === "card") {
+		return (
+			<div
+				ref={setNodeRef}
+				style={style}
+				className={cn(
+					"flex items-stretch gap-2 border border-border/40 bg-background/50 p-2 transition-colors",
+					isDragging &&
+						"bg-card shadow-lg ring-1 ring-primary/40 scale-[1.02]",
+				)}
+			>
+				{handle}
+
+				<div className="flex flex-col gap-1.5 min-w-0 flex-1 py-0.5">
+					<div className="flex items-start justify-between gap-2">
+						<div className="flex items-center gap-1.5 min-w-0 flex-wrap">
+							<p className="text-xs font-semibold text-foreground capitalize leading-tight">
+								{exercise.name}
+							</p>
+						</div>
+
+						<div className="flex items-center gap-0.5 shrink-0">
+							<EditExerciseDialog
+								exercise={exercise}
+								onEditExercise={onEdit}
+							/>
+							<DeleteExerciseDialog
+								exerciseName={exercise.name}
+								onDelete={() => onDelete(exercise.id)}
+							/>
+						</div>
+					</div>
+
+					<div className="flex flex-wrap items-center gap-2 ftext-xs2">
+						<Badge
+							variant="outline"
+							className="border-primary/70 bg-primary/20 font-extrabold fupper text-[9px]"
+						>
+							{exercise.type || "General"}
+						</Badge>
+						<span className="fmuted">
+							<span className="font-bold text-foreground">
+								{exercise.targetSets}
+							</span>{" "}
+							sets
+						</span>
+						·
+						<span className="fmuted">
+							<span className="font-bold text-foreground">
+								{exercise.targetRepRange || "—"}
+							</span>{" "}
+							reps
+						</span>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<TableRow
@@ -54,60 +128,22 @@ export function SortableExerciseRow({
 			style={style}
 			className={cn(
 				"transition-colors hover:bg-background/40",
-				isDragging && "bg-background shadow-lg",
+				isDragging && "bg-card shadow-lg ring-1 ring-primary/40",
 			)}
 		>
-			<TableCell className="w-8 py-2.5 pl-2 pr-0">
-				<button
-					type="button"
-					{...attributes}
-					{...listeners}
-					className="fc size-6 cursor-grab touch-none rounded-none text-muted-foreground/50 transition-colors hover:text-foreground active:cursor-grabbing"
-					aria-label={`Reorder ${exercise.name}`}
-				>
-					<DotsSixVerticalIcon className="size-4" weight="bold" />
-				</button>
-			</TableCell>
+			<TableCell className="w-8 py-2.5 pl-2 pr-0">{handle}</TableCell>
 
 			<TableCell className="py-2.5 px-2">
-				<div className="min-w-0">
-					<Popover>
-						<PopoverTrigger
-							nativeButton={false}
-							render={
-								<span className="block truncate font-semibold text-foreground capitalize cursor-help">
-									{exercise.name}
-								</span>
-							}
-						/>
-						<PopoverContent
-							align="start"
-							className="w-auto max-w-xs rounded-none border-secondary/50 p-2 text-xs"
-						>
-							<p className="font-semibold text-foreground">
-								{exercise.name}
-							</p>
-							{exercise.type && (
-								<p className="fmuted ftext-2xs fupper mt-1">
-									{exercise.type}
-								</p>
-							)}
-						</PopoverContent>
-					</Popover>
-				</div>
+				<p className="font-semibold text-foreground capitalize truncate">
+					{exercise.name}
+				</p>
 			</TableCell>
 
-			<TableCell className="py-2.5 px-2">
-				<span className="text-[9px] uppercase font-extrabold px-1.5 py-0.5 bg-primary/10 text-primary border border-primary/20">
-					{exercise.type || "General"}
-				</span>
-			</TableCell>
-
-			<TableCell className="py-2.5 px-2 text-center font-medium">
+			<TableCell className="py-2.5 px-2 text-center text-sm font-medium">
 				{exercise.targetSets}
 			</TableCell>
 
-			<TableCell className="py-2.5 px-2 text-center font-medium">
+			<TableCell className="py-2.5 px-2 text-center text-sm font-medium">
 				{exercise.targetRepRange || "-"}
 			</TableCell>
 

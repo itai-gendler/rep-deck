@@ -103,6 +103,7 @@ export function PlanDetailsCard({
 									<span className="line-clamp-1">
 										{day.label}
 									</span>
+									·
 									{plan.anchorWeekday != null && (
 										<span className="ftext-2xs fmuted">
 											{deriveWeekdayShort(

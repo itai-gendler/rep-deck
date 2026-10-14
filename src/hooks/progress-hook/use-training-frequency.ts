@@ -43,13 +43,13 @@ export function useTrainingFrequency(
 				data.length > 0
 					? data
 					: [
-							{ day: "Monday", sessions: 0 },
-							{ day: "Tuesday", sessions: 0 },
-							{ day: "Wednesday", sessions: 0 },
-							{ day: "Thursday", sessions: 0 },
-							{ day: "Friday", sessions: 0 },
-							{ day: "Saturday", sessions: 0 },
-							{ day: "Sunday", sessions: 0 },
+							{ day: "Mon", sessions: 0 },
+							{ day: "Tue", sessions: 0 },
+							{ day: "Wed", sessions: 0 },
+							{ day: "Thu", sessions: 0 },
+							{ day: "Fri", sessions: 0 },
+							{ day: "Sat", sessions: 0 },
+							{ day: "Sun", sessions: 0 },
 						];
 
 			let maxVal = 0;

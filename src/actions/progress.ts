@@ -307,13 +307,13 @@ export async function getTrainingFrequency() {
 			.groupBy(sql`EXTRACT(DOW FROM ${workoutSessions.date})`);
 
 		const daysMap = [
-			{ day: "Sunday", dow: 0 },
-			{ day: "Monday", dow: 1 },
-			{ day: "Tuesday", dow: 2 },
-			{ day: "Wednesday", dow: 3 },
-			{ day: "Thursday", dow: 4 },
-			{ day: "Friday", dow: 5 },
-			{ day: "Saturday", dow: 6 },
+			{ day: "Sun", dow: 0 },
+			{ day: "Mon", dow: 1 },
+			{ day: "Tue", dow: 2 },
+			{ day: "Wed", dow: 3 },
+			{ day: "Thu", dow: 4 },
+			{ day: "Fri", dow: 5 },
+			{ day: "Sat", dow: 6 },
 		];
 
 		return daysMap.map(({ day, dow }) => {

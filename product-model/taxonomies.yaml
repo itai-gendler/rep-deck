@@ -1,0 +1,10 @@
+scenarioKinds:
+  - id: primary
+    name: Primary
+    description: Established successful outcomes.
+  - id: validation
+    name: Validation
+    description: Refused input and unavailable actions.
+  - id: edge
+    name: Edge
+    description: Empty, failed or exceptional outcomes.

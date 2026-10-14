@@ -315,51 +315,81 @@ export function DayExercisesListSkeleton({ rows = 4 }: { rows?: number }) {
 				trailing={<Skeleton className="h-7 w-28 rounded-none" />}
 			/>
 			<CardContent className="p-4 pt-1">
-				<table className="w-full text-left text-xs border-collapse">
-					<thead>
-						<tr className="border-b border-border/50">
-							<th className="py-2 px-2">
-								<Skeleton className="h-3 w-16 rounded-sm" />
-							</th>
-							<th className="py-2 px-2">
-								<Skeleton className="h-3 w-10 rounded-sm" />
-							</th>
-							<th className="py-2 px-2">
-								<Skeleton className="h-3 w-8 rounded-sm mx-auto" />
-							</th>
-							<th className="py-2 px-2">
-								<Skeleton className="h-3 w-16 rounded-sm mx-auto" />
-							</th>
-							<th className="py-2 px-2">
-								<Skeleton className="h-3 w-12 rounded-sm ml-auto" />
-							</th>
-						</tr>
-					</thead>
-					<tbody className="divide-y divide-border/30">
-						{Array.from({ length: rows }).map((_, i) => (
-							<tr key={i}>
-								<td className="py-2.5 px-2">
-									<Skeleton className="h-3 w-24 rounded-sm" />
-								</td>
-								<td className="py-2.5 px-2">
-									<Skeleton className="h-4 w-12 rounded-none" />
-								</td>
-								<td className="py-2.5 px-2">
-									<Skeleton className="h-3 w-6 rounded-sm mx-auto" />
-								</td>
-								<td className="py-2.5 px-2">
+				<div className="hidden md:block">
+					<table className="w-full table-fixed text-left text-xs border-collapse">
+						<thead>
+							<tr className="border-b border-border/50">
+								<th className="w-8 py-2 pl-2 pr-0" />
+								<th className="py-2 px-2">
+									<Skeleton className="h-3 w-16 rounded-sm" />
+								</th>
+								<th className="w-[10%] py-2 px-2">
+									<Skeleton className="h-3 w-8 rounded-sm mx-auto" />
+								</th>
+								<th className="w-[20%] py-2 px-2">
 									<Skeleton className="h-3 w-12 rounded-sm mx-auto" />
-								</td>
-								<td className="py-2.5 px-2">
-									<div className="fcy justify-end gap-1">
+								</th>
+								<th className="w-[15%] py-2 pl-1 pr-2">
+									<Skeleton className="h-3 w-12 rounded-sm ml-auto" />
+								</th>
+							</tr>
+						</thead>
+						<tbody className="divide-y divide-border/30">
+							{Array.from({ length: rows }).map((_, i) => (
+								<tr key={i}>
+									<td className="w-8 py-2.5 pl-2 pr-0">
+										<Skeleton className="size-6 rounded-sm" />
+									</td>
+									<td className="py-2.5 px-2">
+										<Skeleton className="h-3.5 w-32 rounded-sm" />
+									</td>
+									<td className="w-[10%] py-2.5 px-2">
+										<Skeleton className="h-3 w-6 rounded-sm mx-auto" />
+									</td>
+									<td className="w-[20%] py-2.5 px-2">
+										<Skeleton className="h-3 w-12 rounded-sm mx-auto" />
+									</td>
+									<td className="w-[15%] py-2.5 pl-1 pr-2">
+										<div className="fcy justify-end gap-1">
+											<Skeleton className="size-7 rounded-sm" />
+											<Skeleton className="size-7 rounded-sm" />
+										</div>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+
+				<div className="flex md:hidden flex-col gap-2">
+					{Array.from({ length: rows }).map((_, i) => (
+						<div
+							key={i}
+							className="flex items-stretch gap-2 border border-border/40 bg-background/50 p-2"
+						>
+							<Skeleton className="w-8 shrink-0 rounded-sm" />
+
+							<div className="flex flex-col gap-1.5 min-w-0 flex-1 py-0.5">
+								<div className="flex items-start justify-between gap-2">
+									<div className="flex items-center gap-1.5 min-w-0 flex-wrap">
+										<Skeleton className="h-3.5 w-28 rounded-sm" />
+									</div>
+
+									<div className="flex items-center gap-0.5 shrink-0">
 										<Skeleton className="size-7 rounded-sm" />
 										<Skeleton className="size-7 rounded-sm" />
 									</div>
-								</td>
-							</tr>
-						))}
-					</tbody>
-				</table>
+								</div>
+
+								<div className="flex flex-wrap items-center gap-2">
+									<Skeleton className="h-4 w-14 rounded-none" />
+									<Skeleton className="h-3 w-12 rounded-sm" />
+									<Skeleton className="h-3 w-14 rounded-sm" />
+								</div>
+							</div>
+						</div>
+					))}
+				</div>
 			</CardContent>
 		</Card>
 	);

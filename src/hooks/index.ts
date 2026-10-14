@@ -22,6 +22,8 @@ import { useQuickStats } from "./metrics-hook/use-quick-stats";
 import { useDialog } from "./plans-hook/use-dialog";
 import { useDialogForm } from "./plans-hook/use-dialog-form";
 import { useFormField } from "./plans-hook/use-form-field";
+import { useMediaQuery } from "./plans-hook/use-media-query";
+
 import { useAllMeasurements } from "./progress-hook/use-all-measurements";
 import { useBodyMetrics } from "./progress-hook/use-body-metrics";
 import { useLiftDetails } from "./progress-hook/use-lift-details";
@@ -45,6 +47,7 @@ export {
 	useExerciseInputs,
 	useExercisePerformance,
 	useWorkoutSession,
+	useMediaQuery,
 	useChallenge,
 	useStrengthChart,
 	useDashboardData,
